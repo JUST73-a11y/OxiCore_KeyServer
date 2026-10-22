@@ -1,0 +1,42 @@
+DEPLOY — Mongo Atlas + Railway (tavsiya)
+========================================
+
+1) ATLAS
+- Network Access → Add IP → Allow from Anywhere (0.0.0.0/0)
+- Database → Connect → Drivers → URI nusxa ol
+  mongodb+srv://USER:PAROL@cluster0.xxx.mongodb.net/oxikey?retryWrites=true&w=majority
+- PAROL da maxsus belgi bo'lsa URL-encode qil
+
+2) RAILWAY (https://railway.app)
+- Login (GitHub)
+- New Project → Empty Project
+- Add Service → GitHub repo  YOKI  "Deploy from local" / drag folder
+  Eng oson: GitHub ga OxiCore_KeyServer papkasini push qil, Railway ulasin
+- Variables (Environment):
+    MONGO_URI=mongodb+srv://...
+    API_SECRET=uzun_random_string
+    SESSION_SECRET=boshqa_uzun_random
+    ADMIN_USER=admin
+    ADMIN_PASS=kuchli_parol
+- Settings → Generate Domain (public URL chiqadi)
+  masalan: https://oxicore-keyserver-production.up.railway.app
+
+3) TEKSHIRISH
+- Brauzer: https://SENNING-URL/
+  → "OxiKey server OK"
+- Admin: https://SENNING-URL/admin/login
+- API test (PowerShell):
+  Invoke-RestMethod -Method POST -Uri "https://SENNING-URL/api/activate" -ContentType "application/json" -Body '{"key":"TEST","device_id":"x","secret":"API_SECRET"}'
+
+4) RENDER.com alternativ
+- New → Web Service → GitHub repo
+- Build: npm install
+- Start: npm start
+- Env vars: xuddi yuqoridagilar
+- Free tier uxlashi mumkin (sovuq start) — Railway barqarorroq
+
+5) APK UCHUN MENGA YUBOR
+BASE_URL=https://senning-domain.up.railway.app
+API_SECRET=config_dagi_secret
+
+Shundan keyin Benzware login serverga ulanadi.
