@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
+const path = require('path');
 const { customAlphabet } = require('nanoid');
 const config = require('./config');
 const { Key, Admin } = require('./models');
@@ -43,6 +44,7 @@ function formatDate(d) {
 }
 
 const app = express();
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -52,6 +54,9 @@ app.use(session({
   saveUninitialized: false,
   cookie: { maxAge: 7 * 24 * 3600 * 1000 },
 }));
+
+app.get('/logo.jpg', (req, res) => res.sendFile(path.join(__dirname, 'public', 'logo.jpg')));
+app.get('/bg.jpg', (req, res) => res.sendFile(path.join(__dirname, 'public', 'bg.jpg')));
 
 // ---------- API ----------
 app.post('/api/activate', async (req, res) => {
@@ -130,6 +135,8 @@ app.post('/api/validate', async (req, res) => {
       expires_at: doc.expiresAt,
       expires_ts: Math.floor(doc.expiresAt.getTime() / 1000),
       plan: doc.plan,
+      devices_count: doc.devices.length,
+      max_devices: doc.maxDevices,
       server_time: Math.floor(Date.now() / 1000),
     });
   } catch (e) {
@@ -138,33 +145,33 @@ app.post('/api/validate', async (req, res) => {
   }
 });
 
-// ---------- CLIENT IN-APP / WEB LOGIN PAGE ----------
+// ---------- CLIENT LOGIN PAGE (MT - HACK GOLD EDITION) ----------
 const clientLoginHTML = `<!DOCTYPE html>
 <html lang="uz">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Benzware • OxiCore VIP Access</title>
+  <title>MT - HACK • VIP Access</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #07090e;
-      --card-bg: rgba(15, 23, 42, 0.75);
-      --card-border: rgba(99, 102, 241, 0.25);
-      --primary: #6366f1;
-      --primary-glow: rgba(99, 102, 241, 0.5);
-      --accent: #a855f7;
-      --success: #10b981;
-      --danger: #ef4444;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
+      --bg: #07080c;
+      --card-bg: rgba(13, 14, 20, 0.82);
+      --gold: #f59e0b;
+      --gold-light: #fbbf24;
+      --gold-dark: #b45309;
+      --gold-glow: rgba(245, 158, 11, 0.45);
+      --card-border: rgba(245, 158, 11, 0.3);
+      --text: #ffffff;
+      --text-muted: #a1a1aa;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.2), transparent 45%),
-                  radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.15), transparent 40%),
+      background: radial-gradient(circle at 50% 10%, rgba(245, 158, 11, 0.18), transparent 50%),
+                  linear-gradient(rgba(7, 8, 12, 0.86), rgba(7, 8, 12, 0.94)),
+                  url('/bg.jpg') center/cover no-repeat fixed,
                   var(--bg);
       min-height: 100vh;
       display: flex;
@@ -177,7 +184,6 @@ const clientLoginHTML = `<!DOCTYPE html>
     .wrapper {
       width: 100%;
       max-width: 420px;
-      perspective: 1000px;
     }
     .card {
       background: var(--card-bg);
@@ -186,8 +192,8 @@ const clientLoginHTML = `<!DOCTYPE html>
       border: 1px solid var(--card-border);
       border-radius: 28px;
       padding: 32px 26px;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7),
-                  0 0 35px -5px var(--primary-glow);
+      box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.9),
+                  0 0 35px -5px var(--gold-glow);
       position: relative;
       overflow: hidden;
     }
@@ -195,63 +201,105 @@ const clientLoginHTML = `<!DOCTYPE html>
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+      background: linear-gradient(90deg, #d97706, #fbbf24, #f59e0b, #d97706);
     }
     .brand {
       text-align: center;
-      margin-bottom: 26px;
+      margin-bottom: 24px;
     }
-    .logo-badge {
-      width: 68px;
-      height: 68px;
+    .logo-frame {
+      width: 76px;
+      height: 76px;
       margin: 0 auto 14px;
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.25));
-      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 22px;
+      border: 2px solid rgba(245, 158, 11, 0.5);
+      background: #000;
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.45);
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
-      animation: float 4s ease-in-out infinite;
+      animation: pulseGlow 3s ease-in-out infinite;
     }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.35); }
+      50% { box-shadow: 0 0 32px rgba(245, 158, 11, 0.65); }
+    }
+    .logo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     .brand h1 {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 800;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #ffffff, #cbd5e1);
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #ffffff, #fbbf24, #f59e0b);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
     }
     .brand p {
-      font-size: 13px;
-      color: var(--text-muted);
+      font-size: 12px;
+      color: var(--gold-light);
       margin-top: 4px;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      font-weight: 600;
+      letter-spacing: 2px;
+      font-weight: 700;
+      opacity: 0.9;
     }
+    
+    /* Live Expiring Header Banner */
+    .expiring-banner {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.1));
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      animation: fadeIn 0.3s ease;
+    }
+    .expiring-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--gold-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .expiring-clock {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
     .input-group {
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       text-align: left;
     }
     .input-label {
       display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gold-light);
       margin-bottom: 7px;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 1px;
     }
     .input-box {
       width: 100%;
       padding: 15px 16px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(10, 11, 16, 0.9);
+      border: 1px solid rgba(245, 158, 11, 0.25);
       border-radius: 16px;
       color: #fff;
       font-size: 16px;
@@ -263,9 +311,9 @@ const clientLoginHTML = `<!DOCTYPE html>
       transition: all 0.25s ease;
     }
     .input-box:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
-      background: rgba(15, 23, 42, 1);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25);
+      background: rgba(15, 17, 24, 1);
     }
     .device-info {
       display: flex;
@@ -273,44 +321,46 @@ const clientLoginHTML = `<!DOCTYPE html>
       justify-content: space-between;
       padding: 10px 14px;
       background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 12px;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       font-size: 12px;
       color: var(--text-muted);
     }
     .device-info code {
       font-family: 'JetBrains Mono', monospace;
-      color: #cbd5e1;
+      color: var(--gold-light);
       font-size: 11px;
     }
     .btn-submit {
       width: 100%;
       padding: 16px;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef);
-      background-size: 200% 200%;
+      background: linear-gradient(135deg, #f59e0b, #d97706, #b45309);
       border: none;
       border-radius: 16px;
       color: #fff;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 800;
       font-family: inherit;
       cursor: pointer;
-      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.5);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.5);
+      transition: all 0.25s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
+      letter-spacing: 0.5px;
     }
     .btn-submit:hover {
       transform: translateY(-2px);
-      box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.65);
+      box-shadow: 0 15px 30px -5px rgba(245, 158, 11, 0.65);
     }
     .btn-submit:active { transform: translateY(0); }
     .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    
     .status-card {
       display: none;
-      margin-top: 20px;
+      margin-top: 18px;
       padding: 16px;
       border-radius: 16px;
       font-size: 13px;
@@ -318,48 +368,37 @@ const clientLoginHTML = `<!DOCTYPE html>
       animation: fadeIn 0.3s ease;
     }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
     .status-card.success {
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
       color: #6ee7b7;
     }
     .status-card.error {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
       color: #fca5a5;
     }
     .stat-row {
       display: flex;
       justify-content: space-between;
-      margin-top: 8px;
+      margin-top: 6px;
       font-size: 12px;
       color: #cbd5e1;
     }
     .stat-row strong { color: #fff; }
-    .countdown-timer {
-      margin-top: 10px;
-      padding: 10px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
-      text-align: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 16px;
-      font-weight: 700;
-      color: #10b981;
-    }
     .footer {
-      margin-top: 24px;
+      margin-top: 22px;
       text-align: center;
       font-size: 12px;
       color: var(--text-muted);
     }
     .footer a {
-      color: var(--primary);
+      color: var(--gold-light);
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 700;
     }
     .footer a:hover { text-decoration: underline; }
     .spinner {
@@ -378,19 +417,25 @@ const clientLoginHTML = `<!DOCTYPE html>
   <div class="wrapper">
     <div class="card">
       <div class="brand">
-        <div class="logo-badge">
-          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          </svg>
+        <div class="logo-frame">
+          <img src="/logo.jpg" alt="MT - HACK Logo">
         </div>
-        <h1>BENZWARE • VIP</h1>
-        <p>Xavfsiz Kirish Tizimi</p>
+        <h1>MT - HACK</h1>
+        <p>VIP Access Verification</p>
+      </div>
+
+      <!-- Live Expiring Banner -->
+      <div id="expiringBanner" class="expiring-banner" style="display: none;">
+        <span class="expiring-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          Expiring:
+        </span>
+        <span id="expiringClock" class="expiring-clock">--:--:--</span>
       </div>
 
       <form id="keyForm" onsubmit="handleActivate(event)">
         <div class="input-group">
-          <label class="input-label">Maxfiy Litsenziya Kaliti</label>
+          <label class="input-label">Kirish Kalitini Kiriting</label>
           <input type="text" id="keyInput" class="input-box" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" autocomplete="off" required>
         </div>
 
@@ -411,7 +456,7 @@ const clientLoginHTML = `<!DOCTYPE html>
       <div id="statusBox" class="status-card"></div>
 
       <div class="footer">
-        OxiCore Security 2.0 • <a href="https://t.me" target="_blank">Telegram Yordam</a>
+        MT - HACK Security • <a href="https://t.me" target="_blank">Telegram Yordam</a>
       </div>
     </div>
   </div>
@@ -436,32 +481,51 @@ const clientLoginHTML = `<!DOCTYPE html>
       e.target.value = parts.join('-');
     });
 
-    // Check if previously active key exists
-    const savedKey = localStorage.getItem('oxikey_active_key');
-    if (savedKey) keyInput.value = savedKey;
-
     let countdownInterval = null;
 
     function startTimer(expiresTs) {
       if (countdownInterval) clearInterval(countdownInterval);
-      const timerEl = document.getElementById('countdownVal');
-      if (!timerEl) return;
+      const banner = document.getElementById('expiringBanner');
+      const clock = document.getElementById('expiringClock');
+      banner.style.display = 'flex';
 
       function update() {
         const now = Math.floor(Date.now() / 1000);
         const diff = expiresTs - now;
         if (diff <= 0) {
-          timerEl.innerText = "Muddati tugadi!";
+          clock.innerText = "Muddati tugadi!";
+          clock.style.color = '#ef4444';
           clearInterval(countdownInterval);
           return;
         }
-        const h = Math.floor(diff / 3600);
+        const d = Math.floor(diff / 86400);
+        const h = Math.floor((diff % 86400) / 3600);
         const m = Math.floor((diff % 3600) / 60);
         const s = diff % 60;
-        timerEl.innerText = \`\${h}s \${m}m \${s}s qoldi\`;
+        
+        let str = '';
+        if (d > 0) str += d + 'd ';
+        str += String(h).padStart(2, '0') + 'h ' + String(m).padStart(2, '0') + 'm ' + String(s).padStart(2, '0') + 's';
+        clock.innerText = str;
+        clock.style.color = '#fbbf24';
       }
       update();
       countdownInterval = setInterval(update, 1000);
+    }
+
+    // Auto validate saved key if exists
+    const savedKey = localStorage.getItem('oxikey_active_key');
+    if (savedKey) {
+      keyInput.value = savedKey;
+      fetch('/api/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: savedKey, device_id: deviceId })
+      }).then(r => r.json()).then(data => {
+        if (data.ok && data.expires_ts) {
+          startTimer(data.expires_ts);
+        }
+      }).catch(() => {});
     }
 
     async function handleActivate(e) {
@@ -495,8 +559,7 @@ const clientLoginHTML = `<!DOCTYPE html>
             <strong>✓ Ruxsat berildi!</strong>
             <div class="stat-row"><span>Tarif:</span> <strong>\${data.plan}</strong></div>
             <div class="stat-row"><span>Qurilmalar:</span> <strong>\${data.devices_count} / \${data.max_devices}</strong></div>
-            <div class="stat-row"><span>Tugash vaqti:</span> <strong>\${new Date(data.expires_at).toLocaleTimeString()}</strong></div>
-            <div class="countdown-timer" id="countdownVal">Hisoblanmoqda...</div>
+            <div class="stat-row"><span>Tugash vaqti:</span> <strong>\${new Date(data.expires_at).toLocaleString()}</strong></div>
           \`;
           startTimer(data.expires_ts);
         } else {
@@ -535,24 +598,26 @@ app.get('/admin/login', (req, res) => {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OxiKey • Admin Login</title>
+  <title>MT - HACK • Admin Login</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #090d16;
-      --card-bg: rgba(17, 24, 39, 0.85);
-      --card-border: rgba(99, 102, 241, 0.25);
-      --primary: #6366f1;
-      --primary-glow: rgba(99, 102, 241, 0.45);
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
+      --bg: #07080c;
+      --card-bg: rgba(13, 14, 20, 0.88);
+      --gold: #f59e0b;
+      --gold-light: #fbbf24;
+      --gold-glow: rgba(245, 158, 11, 0.4);
+      --card-border: rgba(245, 158, 11, 0.3);
+      --text: #ffffff;
+      --text-muted: #a1a1aa;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.25), transparent 50%),
-                  radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.15), transparent 40%),
+      background: radial-gradient(circle at 50% 10%, rgba(245, 158, 11, 0.18), transparent 50%),
+                  linear-gradient(rgba(7, 8, 12, 0.88), rgba(7, 8, 12, 0.94)),
+                  url('/bg.jpg') center/cover no-repeat fixed,
                   var(--bg);
       min-height: 100vh;
       display: flex;
@@ -571,30 +636,30 @@ app.get('/admin/login', (req, res) => {
       border: 1px solid var(--card-border);
       border-radius: 24px;
       padding: 36px 30px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8),
-                  0 0 30px -5px var(--primary-glow);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9),
+                  0 0 30px -5px var(--gold-glow);
     }
-    .header { text-align: center; margin-bottom: 28px; }
+    .header { text-align: center; margin-bottom: 26px; }
     .icon-box {
-      width: 60px; height: 60px;
+      width: 64px; height: 64px;
       margin: 0 auto 14px;
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 2px solid rgba(245, 158, 11, 0.45);
       border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+      display: flex; align-items: center; justify-content: center;
+      background: #000;
     }
-    .header h2 { font-size: 22px; font-weight: 800; color: #fff; }
-    .header p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .icon-box img { width: 100%; height: 100%; object-fit: cover; }
+    .header h2 { font-size: 22px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+    .header p { font-size: 12px; color: var(--gold-light); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
     .form-group { margin-bottom: 18px; }
-    .label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .label { display: block; font-size: 11px; font-weight: 700; color: var(--gold-light); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
     .input-control {
       width: 100%;
       padding: 13px 16px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(10, 11, 16, 0.9);
+      border: 1px solid rgba(245, 158, 11, 0.25);
       border-radius: 14px;
       color: #fff;
       font-size: 14px;
@@ -603,24 +668,24 @@ app.get('/admin/login', (req, res) => {
       transition: all 0.2s ease;
     }
     .input-control:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
     }
     .btn-login {
       width: 100%;
       padding: 14px;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      background: linear-gradient(135deg, #f59e0b, #d97706);
       border: none;
       border-radius: 14px;
       color: #fff;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 10px 20px -3px rgba(99, 102, 241, 0.5);
+      box-shadow: 0 10px 20px -3px rgba(245, 158, 11, 0.5);
       transition: all 0.2s ease;
       margin-top: 8px;
     }
-    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 14px 25px -3px rgba(99, 102, 241, 0.65); }
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 14px 25px -3px rgba(245, 158, 11, 0.65); }
     .error-msg {
       padding: 10px 14px;
       background: rgba(239, 68, 68, 0.15);
@@ -637,11 +702,9 @@ app.get('/admin/login', (req, res) => {
   <div class="login-card">
     <div class="header">
       <div class="icon-box">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-        </svg>
+        <img src="/logo.jpg" alt="Logo">
       </div>
-      <h2>OxiKey Dashboard</h2>
+      <h2>MT - HACK ADMIN</h2>
       <p>Boshqaruv paneliga kirish</p>
     </div>
 
@@ -649,7 +712,7 @@ app.get('/admin/login', (req, res) => {
 
     <form method="POST" action="/admin/login">
       <div class="form-group">
-        <label class="label">Foydalanuvchi nomi</label>
+        <label class="label">Admin Login</label>
         <input name="username" class="input-control" placeholder="admin" required autofocus>
       </div>
       <div class="form-group">
@@ -677,11 +740,10 @@ app.get('/admin/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/admin/login'));
 });
 
-// ---------- ADMIN DASHBOARD (PREMIUM) ----------
+// ---------- ADMIN DASHBOARD (MT - HACK) ----------
 app.get('/admin', requireAdmin, async (req, res) => {
   const keys = await Key.find().sort({ createdAt: -1 }).limit(300).lean();
   
-  // Stats calculation
   const totalCount = keys.length;
   const activeCount = keys.filter(k => k.status === 'active').length;
   const expiredCount = keys.filter(k => k.status === 'expired').length;
@@ -743,28 +805,26 @@ app.get('/admin', requireAdmin, async (req, res) => {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OxiCore • Admin Panel</title>
+  <title>MT - HACK • Admin Panel</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #090d16;
-      --card-bg: rgba(17, 24, 39, 0.7);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --primary: #6366f1;
-      --primary-light: #818cf8;
-      --accent: #a855f7;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
+      --bg: #07080c;
+      --card-bg: rgba(13, 14, 20, 0.85);
+      --card-border: rgba(245, 158, 11, 0.25);
+      --gold: #f59e0b;
+      --gold-light: #fbbf24;
+      --gold-glow: rgba(245, 158, 11, 0.35);
       --text: #f8fafc;
       --text-muted: #94a3b8;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15), transparent 40%),
-                  radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.1), transparent 40%),
+      background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.15), transparent 40%),
+                  linear-gradient(rgba(7, 8, 12, 0.9), rgba(7, 8, 12, 0.95)),
+                  url('/bg.jpg') center/cover no-repeat fixed,
                   var(--bg);
       min-height: 100vh;
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -773,7 +833,6 @@ app.get('/admin', requireAdmin, async (req, res) => {
     }
     .container { max-width: 1280px; margin: 0 auto; }
     
-    /* Topbar */
     .topbar {
       display: flex;
       justify-content: space-between;
@@ -784,17 +843,20 @@ app.get('/admin', requireAdmin, async (req, res) => {
       border: 1px solid var(--card-border);
       border-radius: 20px;
       margin-bottom: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
     .brand-group { display: flex; align-items: center; gap: 14px; }
     .brand-icon {
-      width: 44px; height: 44px;
-      background: linear-gradient(135deg, #6366f1, #a855f7);
+      width: 46px; height: 46px;
       border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4);
+      border: 1.5px solid rgba(245, 158, 11, 0.4);
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
     }
-    .brand-title { font-size: 18px; font-weight: 800; }
-    .brand-sub { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+    .brand-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .brand-title { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+    .brand-sub { font-size: 11px; color: var(--gold-light); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+    
     .user-pill {
       display: flex; align-items: center; gap: 12px;
       background: rgba(255, 255, 255, 0.04);
@@ -813,7 +875,6 @@ app.get('/admin', requireAdmin, async (req, res) => {
     }
     .btn-logout:hover { background: rgba(239, 68, 68, 0.2); }
 
-    /* Stats Grid */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -838,7 +899,6 @@ app.get('/admin', requireAdmin, async (req, res) => {
     .stat-val { font-size: 26px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
     .stat-lbl { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    /* New Key Generator Card */
     .section-card {
       background: var(--card-bg);
       backdrop-filter: blur(20px);
@@ -853,7 +913,7 @@ app.get('/admin', requireAdmin, async (req, res) => {
       align-items: center;
       margin-bottom: 18px;
     }
-    .card-head h3 { font-size: 16px; font-weight: 700; }
+    .card-head h3 { font-size: 16px; font-weight: 700; color: var(--gold-light); text-transform: uppercase; letter-spacing: 0.5px; }
     
     .gen-grid {
       display: grid;
@@ -861,12 +921,12 @@ app.get('/admin', requireAdmin, async (req, res) => {
       gap: 12px;
       align-items: end;
     }
-    .field label { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+    .field label { display: block; font-size: 11px; font-weight: 700; color: var(--gold-light); margin-bottom: 6px; text-transform: uppercase; }
     .field input, .field select {
       width: 100%;
       padding: 11px 14px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(10, 11, 16, 0.9);
+      border: 1px solid rgba(245, 158, 11, 0.25);
       border-radius: 12px;
       color: #fff;
       font-size: 13px;
@@ -875,29 +935,28 @@ app.get('/admin', requireAdmin, async (req, res) => {
       transition: all 0.2s;
     }
     .field input:focus, .field select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
     }
     .btn-create {
       padding: 12px 24px;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      background: linear-gradient(135deg, #f59e0b, #d97706);
       border: none;
       border-radius: 12px;
       color: #fff;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 800;
       font-family: inherit;
       cursor: pointer;
-      box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4);
+      box-shadow: 0 8px 16px rgba(245, 158, 11, 0.4);
       transition: all 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
     }
-    .btn-create:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(99, 102, 241, 0.55); }
+    .btn-create:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(245, 158, 11, 0.55); }
 
-    /* Filter & Search Bar */
     .filter-bar {
       display: flex;
       justify-content: space-between;
@@ -908,8 +967,8 @@ app.get('/admin', requireAdmin, async (req, res) => {
     }
     .search-input {
       padding: 10px 16px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(10, 11, 16, 0.9);
+      border: 1px solid rgba(245, 158, 11, 0.25);
       border-radius: 12px;
       color: #fff;
       font-size: 13px;
@@ -929,13 +988,13 @@ app.get('/admin', requireAdmin, async (req, res) => {
       transition: all 0.2s;
     }
     .tab-btn.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+      background: var(--gold);
+      color: #000;
+      font-weight: 800;
+      border-color: var(--gold);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
     }
 
-    /* Table Styles */
     .table-responsive {
       overflow-x: auto;
       border-radius: 16px;
@@ -946,12 +1005,12 @@ app.get('/admin', requireAdmin, async (req, res) => {
       border-collapse: collapse;
       text-align: left;
       font-size: 13px;
-      background: rgba(15, 23, 42, 0.5);
+      background: rgba(10, 11, 16, 0.75);
     }
     th {
-      background: rgba(15, 23, 42, 0.95);
+      background: rgba(13, 14, 20, 0.98);
       padding: 14px 16px;
-      color: var(--text-muted);
+      color: var(--gold-light);
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
@@ -963,17 +1022,17 @@ app.get('/admin', requireAdmin, async (req, res) => {
       border-bottom: 1px solid rgba(255, 255, 255, 0.04);
       vertical-align: middle;
     }
-    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+    tr:hover td { background: rgba(245, 158, 11, 0.03); }
     
     .key-cell { display: flex; align-items: center; gap: 8px; }
     .key-code {
       font-family: 'JetBrains Mono', monospace;
-      font-weight: 600;
-      color: #818cf8;
-      background: rgba(99, 102, 241, 0.1);
+      font-weight: 700;
+      color: #fbbf24;
+      background: rgba(245, 158, 11, 0.1);
       padding: 4px 8px;
       border-radius: 8px;
-      border: 1px solid rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.3);
     }
     .btn-copy {
       background: rgba(255, 255, 255, 0.06);
@@ -985,7 +1044,7 @@ app.get('/admin', requireAdmin, async (req, res) => {
       cursor: pointer;
       transition: all 0.2s;
     }
-    .btn-copy:hover { background: var(--primary); color: #fff; }
+    .btn-copy:hover { background: var(--gold); color: #000; }
     
     .badge {
       display: inline-block;
@@ -1001,16 +1060,8 @@ app.get('/admin', requireAdmin, async (req, res) => {
     .badge-revoked { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
     .badge-unused { background: rgba(148, 163, 184, 0.12); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.2); }
     
-    .plan-pill {
-      font-size: 12px;
-      font-weight: 600;
-      color: #cbd5e1;
-    }
-    .device-pill {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: #94a3b8;
-    }
+    .plan-pill { font-size: 12px; font-weight: 600; color: #cbd5e1; }
+    .device-pill { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #94a3b8; }
     .date-cell { font-size: 12px; color: #94a3b8; }
     
     .actions-cell { display: flex; gap: 6px; }
@@ -1024,25 +1075,24 @@ app.get('/admin', requireAdmin, async (req, res) => {
       cursor: pointer;
       transition: all 0.2s;
     }
-    .btn-extend { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border-color: rgba(99, 102, 241, 0.3); }
-    .btn-extend:hover { background: #6366f1; color: #fff; }
+    .btn-extend { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3); }
+    .btn-extend:hover { background: #f59e0b; color: #000; }
     .btn-reset { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.3); }
     .btn-reset:hover { background: #10b981; color: #fff; }
     .btn-revoke { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border-color: rgba(239, 68, 68, 0.3); }
     .btn-revoke:hover { background: #ef4444; color: #fff; }
 
-    /* Toast */
     #toast {
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background: #10b981;
-      color: #fff;
+      background: var(--gold);
+      color: #000;
       padding: 12px 20px;
       border-radius: 12px;
       font-size: 13px;
-      font-weight: 700;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      font-weight: 800;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.7);
       display: none;
       z-index: 9999;
     }
@@ -1050,18 +1100,14 @@ app.get('/admin', requireAdmin, async (req, res) => {
 </head>
 <body>
   <div class="container">
-    <!-- Topbar -->
     <div class="topbar">
       <div class="brand-group">
         <div class="brand-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          </svg>
+          <img src="/logo.jpg" alt="MT Logo">
         </div>
         <div>
-          <div class="brand-title">OxiCore VIP Server</div>
-          <div class="brand-sub">Kalitlar boshqaruvi</div>
+          <div class="brand-title">MT - HACK SERVER</div>
+          <div class="brand-sub">VIP Access Control</div>
         </div>
       </div>
       <div class="user-pill">
@@ -1070,10 +1116,9 @@ app.get('/admin', requireAdmin, async (req, res) => {
       </div>
     </div>
 
-    <!-- Stats Grid -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: #818cf8;">
+        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 12h10M7 17h10"/></svg>
         </div>
         <div>
@@ -1110,7 +1155,6 @@ app.get('/admin', requireAdmin, async (req, res) => {
       </div>
     </div>
 
-    <!-- Key Generator Card -->
     <div class="section-card">
       <div class="card-head">
         <h3>+ Yangi kalit(lar) yaratish</h3>
@@ -1153,7 +1197,6 @@ app.get('/admin', requireAdmin, async (req, res) => {
       </form>
     </div>
 
-    <!-- Filter & Keys List -->
     <div class="section-card">
       <div class="filter-bar">
         <input type="text" class="search-input" id="searchBox" placeholder="Qidirish (kalit yoki mijoz)..." onkeyup="filterRows()">
@@ -1238,7 +1281,7 @@ app.post('/admin/create', requireAdmin, async (req, res) => {
     try {
       await Key.create({ keyCode: code, plan, durationSeconds, maxDevices, note });
     } catch (e) {
-      i--; // retry on collision
+      i--;
     }
   }
   res.redirect('/admin');
@@ -1284,6 +1327,6 @@ async function start() {
     await Admin.create({ username: config.ADMIN_USER, passwordHash });
     console.log('Admin created:', config.ADMIN_USER, config.ADMIN_PASS);
   }
-  app.listen(config.PORT, () => console.log('OxiKey on :' + config.PORT));
+  app.listen(config.PORT, () => console.log('MT-HACK on :' + config.PORT));
 }
 start().catch(e => { console.error(e); process.exit(1); });
