@@ -299,6 +299,28 @@ const clientLoginHTML = `<!DOCTYPE html>
       border-radius: 50%; animation: spin 0.8s linear infinite; display: none;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-tg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(36, 161, 222, 0.12);
+      border: 1px solid rgba(36, 161, 222, 0.35);
+      border-radius: 14px;
+      color: #38bdf8;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+    .btn-tg:hover {
+      background: rgba(36, 161, 222, 0.22);
+      border-color: #38bdf8;
+      box-shadow: 0 4px 16px rgba(36, 161, 222, 0.35);
+      transform: translateY(-1px);
+    }
   </style>
 </head>
 <body>
@@ -342,8 +364,16 @@ const clientLoginHTML = `<!DOCTYPE html>
 
       <div id="statusBox" class="status-card"></div>
 
+      <a href="https://t.me/Muhamadali_oo1" target="_blank" class="btn-tg">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+        Admin bilan bog'lanish: @Muhamadali_oo1
+      </a>
+
       <div class="footer">
-        MT - HACK Security • <a href="https://t.me" target="_blank">Telegram Yordam</a>
+        MT - HACK Security • Telegram: <a href="https://t.me/Muhamadali_oo1" target="_blank">@Muhamadali_oo1</a>
       </div>
     </div>
   </div>
@@ -996,9 +1026,15 @@ app.get('/admin', requireAdmin, async (req, res) => {
           <div class="brand-sub">VIP Access Control</div>
         </div>
       </div>
-      <div class="user-pill">
-        <span>Admin: <strong>${req.session.admin}</strong></span>
-        <a href="/admin/logout" class="btn-logout" onclick="return confirm('Chiqishni tasdiqlaysizmi?')">Chiqish</a>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <a href="https://t.me/Muhamadali_oo1" target="_blank" class="user-pill" style="color: #38bdf8; text-decoration: none; font-weight: 700;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          @Muhamadali_oo1
+        </a>
+        <div class="user-pill">
+          <span>Admin: <strong>${req.session.admin}</strong></span>
+          <a href="/admin/logout" class="btn-logout" onclick="return confirm('Chiqishni tasdiqlaysizmi?')">Chiqish</a>
+        </div>
       </div>
     </div>
 
