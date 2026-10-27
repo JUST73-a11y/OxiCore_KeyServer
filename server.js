@@ -181,10 +181,7 @@ const clientLoginHTML = `<!DOCTYPE html>
       color: var(--text);
       padding: 16px;
     }
-    .wrapper {
-      width: 100%;
-      max-width: 420px;
-    }
+    .wrapper { width: 100%; max-width: 420px; }
     .card {
       background: var(--card-bg);
       backdrop-filter: blur(24px);
@@ -203,53 +200,35 @@ const clientLoginHTML = `<!DOCTYPE html>
       top: 0; left: 0; right: 0; height: 3px;
       background: linear-gradient(90deg, #d97706, #fbbf24, #f59e0b, #d97706);
     }
-    .brand {
-      text-align: center;
-      margin-bottom: 24px;
-    }
+    .brand { text-align: center; margin-bottom: 24px; }
     .logo-frame {
-      width: 76px;
-      height: 76px;
+      width: 76px; height: 76px;
       margin: 0 auto 14px;
       border-radius: 22px;
       border: 2px solid rgba(245, 158, 11, 0.5);
       background: #000;
       box-shadow: 0 0 25px rgba(245, 158, 11, 0.45);
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       animation: pulseGlow 3s ease-in-out infinite;
     }
     @keyframes pulseGlow {
       0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.35); }
       50% { box-shadow: 0 0 32px rgba(245, 158, 11, 0.65); }
     }
-    .logo-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .logo-frame img { width: 100%; height: 100%; object-fit: cover; }
     .brand h1 {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: 1px;
+      font-size: 26px; font-weight: 800; letter-spacing: 1px;
       background: linear-gradient(135deg, #ffffff, #fbbf24, #f59e0b);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-transform: uppercase;
     }
     .brand p {
-      font-size: 12px;
-      color: var(--gold-light);
-      margin-top: 4px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-weight: 700;
-      opacity: 0.9;
+      font-size: 12px; color: var(--gold-light); margin-top: 4px;
+      text-transform: uppercase; letter-spacing: 2px; font-weight: 700; opacity: 0.9;
     }
     
-    /* Live Expiring Header Banner */
     .expiring-banner {
       background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.1));
       border: 1px solid rgba(245, 158, 11, 0.4);
@@ -262,153 +241,62 @@ const clientLoginHTML = `<!DOCTYPE html>
       animation: fadeIn 0.3s ease;
     }
     .expiring-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 1px;
-      color: var(--gold-light);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; color: var(--gold-light);
+      display: flex; align-items: center; gap: 6px;
     }
     .expiring-clock {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 14px;
-      font-weight: 700;
-      color: #fff;
+      font-size: 14px; font-weight: 700; color: #fff;
       background: rgba(0, 0, 0, 0.5);
-      padding: 4px 10px;
-      border-radius: 8px;
-      border: 1px solid rgba(245, 158, 11, 0.25);
+      padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.25);
     }
 
-    .input-group {
-      margin-bottom: 16px;
-      text-align: left;
-    }
+    .input-group { margin-bottom: 16px; text-align: left; }
     .input-label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--gold-light);
-      margin-bottom: 7px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      display: block; font-size: 11px; font-weight: 700; color: var(--gold-light);
+      margin-bottom: 7px; text-transform: uppercase; letter-spacing: 1px;
     }
     .input-box {
-      width: 100%;
-      padding: 15px 16px;
-      background: rgba(10, 11, 16, 0.9);
-      border: 1px solid rgba(245, 158, 11, 0.25);
-      border-radius: 16px;
-      color: #fff;
-      font-size: 16px;
-      font-family: 'JetBrains Mono', monospace;
-      letter-spacing: 2px;
-      text-align: center;
-      text-transform: uppercase;
-      outline: none;
+      width: 100%; padding: 15px 16px; background: rgba(10, 11, 16, 0.9);
+      border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 16px;
+      color: #fff; font-size: 16px; font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 2px; text-align: center; text-transform: uppercase; outline: none;
       transition: all 0.25s ease;
     }
     .input-box:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25);
-      background: rgba(15, 17, 24, 1);
+      border-color: var(--gold); box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25); background: rgba(15, 17, 24, 1);
     }
     .device-info {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 14px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 12px;
-      margin-bottom: 20px;
-      font-size: 12px;
-      color: var(--text-muted);
+      display: flex; align-items: center; justify-content: space-between; padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px; margin-bottom: 20px; font-size: 12px; color: var(--text-muted);
     }
-    .device-info code {
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--gold-light);
-      font-size: 11px;
-    }
+    .device-info code { font-family: 'JetBrains Mono', monospace; color: var(--gold-light); font-size: 11px; }
     .btn-submit {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #f59e0b, #d97706, #b45309);
-      border: none;
-      border-radius: 16px;
-      color: #fff;
-      font-size: 15px;
-      font-weight: 800;
-      font-family: inherit;
-      cursor: pointer;
-      box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.5);
-      transition: all 0.25s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      letter-spacing: 0.5px;
+      width: 100%; padding: 16px; background: linear-gradient(135deg, #f59e0b, #d97706, #b45309);
+      border: none; border-radius: 16px; color: #fff; font-size: 15px; font-weight: 800; font-family: inherit;
+      cursor: pointer; box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.5); transition: all 0.25s ease;
+      display: flex; align-items: center; justify-content: center; gap: 10px; letter-spacing: 0.5px;
     }
-    .btn-submit:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 30px -5px rgba(245, 158, 11, 0.65);
-    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 15px 30px -5px rgba(245, 158, 11, 0.65); }
     .btn-submit:active { transform: translateY(0); }
     .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
     
     .status-card {
-      display: none;
-      margin-top: 18px;
-      padding: 16px;
-      border-radius: 16px;
-      font-size: 13px;
-      text-align: left;
+      display: none; margin-top: 18px; padding: 16px; border-radius: 16px; font-size: 13px; text-align: left;
       animation: fadeIn 0.3s ease;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .status-card.success {
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      color: #6ee7b7;
-    }
-    .status-card.error {
-      background: rgba(239, 68, 68, 0.12);
-      border: 1px solid rgba(239, 68, 68, 0.35);
-      color: #fca5a5;
-    }
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 6px;
-      font-size: 12px;
-      color: #cbd5e1;
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .status-card.success { background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); color: #6ee7b7; }
+    .status-card.error { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); color: #fca5a5; }
+    .stat-row { display: flex; justify-content: space-between; margin-top: 6px; font-size: 12px; color: #cbd5e1; }
     .stat-row strong { color: #fff; }
-    .footer {
-      margin-top: 22px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .footer a {
-      color: var(--gold-light);
-      text-decoration: none;
-      font-weight: 700;
-    }
+    .footer { margin-top: 22px; text-align: center; font-size: 12px; color: var(--text-muted); }
+    .footer a { color: var(--gold-light); text-decoration: none; font-weight: 700; }
     .footer a:hover { text-decoration: underline; }
     .spinner {
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      display: none;
+      width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+      border-radius: 50%; animation: spin 0.8s linear infinite; display: none;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
@@ -424,7 +312,6 @@ const clientLoginHTML = `<!DOCTYPE html>
         <p>VIP Access Verification</p>
       </div>
 
-      <!-- Live Expiring Banner -->
       <div id="expiringBanner" class="expiring-banner" style="display: none;">
         <span class="expiring-label">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
@@ -462,7 +349,6 @@ const clientLoginHTML = `<!DOCTYPE html>
   </div>
 
   <script>
-    // Device ID handling
     let deviceId = localStorage.getItem('oxikey_device_id');
     if (!deviceId) {
       deviceId = 'DEV-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
@@ -470,7 +356,6 @@ const clientLoginHTML = `<!DOCTYPE html>
     }
     document.getElementById('devIdText').innerText = deviceId;
 
-    // Auto format key input with hyphens
     const keyInput = document.getElementById('keyInput');
     keyInput.addEventListener('input', function(e) {
       let val = e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 16);
@@ -513,7 +398,6 @@ const clientLoginHTML = `<!DOCTYPE html>
       countdownInterval = setInterval(update, 1000);
     }
 
-    // Auto validate saved key if exists
     const savedKey = localStorage.getItem('oxikey_active_key');
     if (savedKey) {
       keyInput.value = savedKey;
@@ -628,27 +512,17 @@ app.get('/admin/login', (req, res) => {
       padding: 16px;
     }
     .login-card {
-      width: 100%;
-      max-width: 380px;
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 36px 30px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9),
-                  0 0 30px -5px var(--gold-glow);
+      width: 100%; max-width: 380px; background: var(--card-bg);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border); border-radius: 24px; padding: 36px 30px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9), 0 0 30px -5px var(--gold-glow);
     }
     .header { text-align: center; margin-bottom: 26px; }
     .icon-box {
-      width: 64px; height: 64px;
-      margin: 0 auto 14px;
-      border: 2px solid rgba(245, 158, 11, 0.45);
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
-      display: flex; align-items: center; justify-content: center;
-      background: #000;
+      width: 64px; height: 64px; margin: 0 auto 14px;
+      border: 2px solid rgba(245, 158, 11, 0.45); border-radius: 18px;
+      overflow: hidden; box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+      display: flex; align-items: center; justify-content: center; background: #000;
     }
     .icon-box img { width: 100%; height: 100%; object-fit: cover; }
     .header h2 { font-size: 22px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
@@ -656,45 +530,22 @@ app.get('/admin/login', (req, res) => {
     .form-group { margin-bottom: 18px; }
     .label { display: block; font-size: 11px; font-weight: 700; color: var(--gold-light); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
     .input-control {
-      width: 100%;
-      padding: 13px 16px;
-      background: rgba(10, 11, 16, 0.9);
-      border: 1px solid rgba(245, 158, 11, 0.25);
-      border-radius: 14px;
-      color: #fff;
-      font-size: 14px;
-      font-family: inherit;
-      outline: none;
-      transition: all 0.2s ease;
+      width: 100%; padding: 13px 16px; background: rgba(10, 11, 16, 0.9);
+      border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 14px;
+      color: #fff; font-size: 14px; font-family: inherit; outline: none; transition: all 0.2s ease;
     }
     .input-control:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
+      border-color: var(--gold); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
     }
     .btn-login {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      border: none;
-      border-radius: 14px;
-      color: #fff;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 10px 20px -3px rgba(245, 158, 11, 0.5);
-      transition: all 0.2s ease;
-      margin-top: 8px;
+      width: 100%; padding: 14px; background: linear-gradient(135deg, #f59e0b, #d97706);
+      border: none; border-radius: 14px; color: #fff; font-size: 15px; font-weight: 800;
+      cursor: pointer; box-shadow: 0 10px 20px -3px rgba(245, 158, 11, 0.5); transition: all 0.2s ease; margin-top: 8px;
     }
     .btn-login:hover { transform: translateY(-2px); box-shadow: 0 14px 25px -3px rgba(245, 158, 11, 0.65); }
     .error-msg {
-      padding: 10px 14px;
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-      border-radius: 12px;
-      font-size: 12px;
-      margin-bottom: 18px;
-      text-align: center;
+      padding: 10px 14px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5; border-radius: 12px; font-size: 12px; margin-bottom: 18px; text-align: center;
     }
   </style>
 </head>
@@ -765,6 +616,9 @@ app.get('/admin', requireAdmin, async (req, res) => {
       statusText = 'Bekor qilingan';
     }
 
+    const expTs = k.expiresAt ? Math.floor(new Date(k.expiresAt).getTime() / 1000) : 0;
+    const isAct = !!k.activatedAt;
+
     return `<tr data-status="${k.status}" data-search="${k.keyCode} ${k.note || ''}">
       <td class="key-cell">
         <span class="key-code" id="code_${k._id}">${k.keyCode}</span>
@@ -772,27 +626,30 @@ app.get('/admin', requireAdmin, async (req, res) => {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         </button>
       </td>
-      <td><span class="plan-pill">${k.plan} (${Math.round(k.durationSeconds / 3600)}s)</span></td>
+      <td><span class="plan-pill">${k.plan}</span></td>
       <td><span class="badge ${badgeClass}">${statusText}</span></td>
       <td><span class="device-pill">${devs} / ${k.maxDevices}</span></td>
       <td class="date-cell">${formatDate(k.activatedAt)}</td>
-      <td class="date-cell">${formatDate(k.expiresAt)}</td>
+      <td class="date-cell">
+        <div class="exp-date-str">${formatDate(k.expiresAt)}</div>
+        <div class="live-countdown" data-expires="${expTs}" data-active="${isAct ? '1' : '0'}">--:--:--</div>
+      </td>
       <td class="note-cell">${k.note || '<span style="opacity:0.3">-</span>'}</td>
       <td class="actions-cell">
-        <form class="act-form" method="POST" action="/admin/extend">
+        <form class="act-form" method="POST" action="/admin/extend" onsubmit="return confirm('Ushbu kalit muddatiga +1 soat qo\\'shmoqchimisiz?\\nKalit: ${k.keyCode}')">
           <input type="hidden" name="id" value="${k._id}">
           <button class="btn-act btn-extend" title="+1 soat qo'shish">+1s</button>
         </form>
-        <form class="act-form" method="POST" action="/admin/extend">
+        <form class="act-form" method="POST" action="/admin/extend" onsubmit="return confirm('Ushbu kalit muddatiga +24 soat (1 kun) qo\\'shmoqchimisiz?\\nKalit: ${k.keyCode}')">
           <input type="hidden" name="id" value="${k._id}">
           <input type="hidden" name="add_seconds" value="86400">
           <button class="btn-act btn-extend" title="+24 soat qo'shish">+1k</button>
         </form>
-        <form class="act-form" method="POST" action="/admin/reset">
+        <form class="act-form" method="POST" action="/admin/reset" onsubmit="return confirm('Kalitni HOZIRGI vaqtdan boshlab 24 soatga qayta tiklashni tasdiqlaysizmi?\\nKalit: ${k.keyCode}')">
           <input type="hidden" name="id" value="${k._id}">
           <button class="btn-act btn-reset" title="Hozirdan boshlab 24 soatga qayta tiklash">Qayta</button>
         </form>
-        <form class="act-form" method="POST" action="/admin/revoke">
+        <form class="act-form" method="POST" action="/admin/revoke" onsubmit="return confirm('DIQQAT! Ushbu kalitni bekor qilmoqchimisiz (bloklash)?\\nFoydalanuvchi tizimdan chiqariladi!\\nKalit: ${k.keyCode}')">
           <input type="hidden" name="id" value="${k._id}">
           <button class="btn-act btn-revoke" title="Kalitni bekor qilish">✕</button>
         </form>
@@ -808,7 +665,7 @@ app.get('/admin', requireAdmin, async (req, res) => {
   <title>MT - HACK • Admin Panel</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #07080c;
@@ -1060,8 +917,37 @@ app.get('/admin', requireAdmin, async (req, res) => {
     .badge-revoked { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
     .badge-unused { background: rgba(148, 163, 184, 0.12); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.2); }
     
-    .plan-pill { font-size: 12px; font-weight: 600; color: #cbd5e1; }
+    .plan-pill { font-size: 12px; font-weight: 700; color: #cbd5e1; }
     .device-pill { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #94a3b8; }
+    
+    /* Expire Date & Live Countdown */
+    .exp-date-str { font-size: 12px; color: #cbd5e1; margin-bottom: 4px; }
+    .live-countdown {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+    .countdown-active {
+      color: #fbbf24;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .countdown-expired {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .countdown-waiting {
+      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     .date-cell { font-size: 12px; color: #94a3b8; }
     
     .actions-cell { display: flex; gap: 6px; }
@@ -1076,11 +962,11 @@ app.get('/admin', requireAdmin, async (req, res) => {
       transition: all 0.2s;
     }
     .btn-extend { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3); }
-    .btn-extend:hover { background: #f59e0b; color: #000; }
+    .btn-extend:hover { background: #f59e0b; color: #000; transform: translateY(-1px); }
     .btn-reset { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.3); }
-    .btn-reset:hover { background: #10b981; color: #fff; }
+    .btn-reset:hover { background: #10b981; color: #fff; transform: translateY(-1px); }
     .btn-revoke { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border-color: rgba(239, 68, 68, 0.3); }
-    .btn-revoke:hover { background: #ef4444; color: #fff; }
+    .btn-revoke:hover { background: #ef4444; color: #fff; transform: translateY(-1px); }
 
     #toast {
       position: fixed;
@@ -1112,7 +998,7 @@ app.get('/admin', requireAdmin, async (req, res) => {
       </div>
       <div class="user-pill">
         <span>Admin: <strong>${req.session.admin}</strong></span>
-        <a href="/admin/logout" class="btn-logout">Chiqish</a>
+        <a href="/admin/logout" class="btn-logout" onclick="return confirm('Chiqishni tasdiqlaysizmi?')">Chiqish</a>
       </div>
     </div>
 
@@ -1217,7 +1103,7 @@ app.get('/admin', requireAdmin, async (req, res) => {
               <th>Status</th>
               <th>Qurilmalar</th>
               <th>Aktivlashgan</th>
-              <th>Tugash vaqti</th>
+              <th>Tugash vaqti (Jonli Taymer)</th>
               <th>Mijoz izohi</th>
               <th>Amallar</th>
             </tr>
@@ -1264,6 +1150,42 @@ app.get('/admin', requireAdmin, async (req, res) => {
         r.style.display = (matchesFilter && matchesSearch) ? '' : 'none';
       });
     }
+
+    // Live countdown updater for all keys in table
+    function updateCountdowns() {
+      const now = Math.floor(Date.now() / 1000);
+      document.querySelectorAll('.live-countdown').forEach(el => {
+        const exp = parseInt(el.getAttribute('data-expires'), 10);
+        const isAct = el.getAttribute('data-active') === '1';
+
+        if (!isAct || !exp) {
+          el.innerText = 'Aktivlashmagan';
+          el.className = 'live-countdown countdown-waiting';
+          return;
+        }
+
+        const diff = exp - now;
+        if (diff <= 0) {
+          el.innerText = '⚠️ Muddati tugagan';
+          el.className = 'live-countdown countdown-expired';
+          return;
+        }
+
+        const d = Math.floor(diff / 86400);
+        const h = Math.floor((diff % 86400) / 3600);
+        const m = Math.floor((diff % 3600) / 60);
+        const s = diff % 60;
+
+        let str = '⏱ ';
+        if (d > 0) str += d + 'k ';
+        str += String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        el.innerText = str;
+        el.className = 'live-countdown countdown-active';
+      });
+    }
+
+    setInterval(updateCountdowns, 1000);
+    updateCountdowns();
   </script>
 </body>
 </html>`);
