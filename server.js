@@ -623,8 +623,23 @@ app.get('/admin/logout', (req, res) => {
 
 // ---------- ADMIN DASHBOARD (MT - HACK) ----------
 app.get('/admin', requireAdmin, async (req, res) => {
+  const now = new Date();
   const keys = await Key.find().sort({ createdAt: -1 }).limit(300).lean();
   
+  const expiredIds = [];
+  keys.forEach(k => {
+    if (k.status !== 'revoked' && k.activatedAt && k.expiresAt) {
+      if (now > new Date(k.expiresAt)) {
+        k.status = 'expired';
+        expiredIds.push(k._id);
+      }
+    }
+  });
+
+  if (expiredIds.length > 0) {
+    Key.updateMany({ _id: { $in: expiredIds } }, { status: 'expired' }).exec().catch(() => {});
+  }
+
   const totalCount = keys.length;
   const activeCount = keys.filter(k => k.status === 'active').length;
   const expiredCount = keys.filter(k => k.status === 'expired').length;
@@ -1353,6 +1368,16 @@ app.get('/admin', requireAdmin, async (req, res) => {
         if (diff <= 0) {
           el.innerText = '⚠️ Muddati tugagan';
           el.className = 'live-countdown countdown-expired';
+          const row = el.closest('tr');
+          if (row && row.getAttribute('data-status') === 'active') {
+            row.setAttribute('data-status', 'expired');
+            const badgeEl = row.querySelector('.badge');
+            if (badgeEl) {
+              badgeEl.className = 'badge badge-expired';
+              badgeEl.innerText = 'Tugagan';
+            }
+            refreshCounts();
+          }
           return;
         }
 
@@ -1367,6 +1392,31 @@ app.get('/admin', requireAdmin, async (req, res) => {
         el.innerText = str;
         el.className = 'live-countdown countdown-active';
       });
+    }
+
+    function refreshCounts() {
+      const rows = Array.from(document.querySelectorAll('#keysTableBody tr'));
+      let act = 0, exp = 0, rev = 0;
+      rows.forEach(r => {
+        const s = r.getAttribute('data-status');
+        if (s === 'active') act++;
+        else if (s === 'expired') exp++;
+        else if (s === 'revoked') rev++;
+      });
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      if (tabBtns.length >= 4) {
+        tabBtns[0].innerText = 'Hammasi (' + rows.length + ')';
+        tabBtns[1].innerText = 'Faol (' + act + ')';
+        tabBtns[2].innerText = 'Tugagan (' + exp + ')';
+        tabBtns[3].innerText = 'Bekor qilingan (' + rev + ')';
+      }
+      const statVals = document.querySelectorAll('.stat-val');
+      if (statVals.length >= 4) {
+        statVals[0].innerText = rows.length;
+        statVals[1].innerText = act;
+        statVals[2].innerText = exp;
+        statVals[3].innerText = rev;
+      }
     }
 
     setInterval(updateCountdowns, 1000);
