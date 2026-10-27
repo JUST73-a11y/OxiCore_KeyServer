@@ -668,13 +668,25 @@ app.get('/admin', requireAdmin, async (req, res) => {
       <td class="actions-cell">
         <form class="act-form" method="POST" action="/admin/extend" onsubmit="return confirm('Ushbu kalit muddatiga +1 soat qo\\'shmoqchimisiz?\\nKalit: ${k.keyCode}')">
           <input type="hidden" name="id" value="${k._id}">
+          <input type="hidden" name="add_seconds" value="3600">
           <button class="btn-act btn-extend" title="+1 soat qo'shish">+1s</button>
+        </form>
+        <form class="act-form" method="POST" action="/admin/extend" onsubmit="return confirm('Ushbu kalit muddatidan -1 soat ayirmoqchimisiz?\\nKalit: ${k.keyCode}')">
+          <input type="hidden" name="id" value="${k._id}">
+          <input type="hidden" name="add_seconds" value="-3600">
+          <button class="btn-act btn-sub" title="-1 soat ayirish">-1s</button>
         </form>
         <form class="act-form" method="POST" action="/admin/extend" onsubmit="return confirm('Ushbu kalit muddatiga +24 soat (1 kun) qo\\'shmoqchimisiz?\\nKalit: ${k.keyCode}')">
           <input type="hidden" name="id" value="${k._id}">
           <input type="hidden" name="add_seconds" value="86400">
           <button class="btn-act btn-extend" title="+24 soat qo'shish">+1k</button>
         </form>
+        <form class="act-form" method="POST" action="/admin/extend" onsubmit="return confirm('Ushbu kalit muddatidan -24 soat (1 kun) ayirmoqchimisiz?\\nKalit: ${k.keyCode}')">
+          <input type="hidden" name="id" value="${k._id}">
+          <input type="hidden" name="add_seconds" value="-86400">
+          <button class="btn-act btn-sub" title="-24 soat ayirish">-1k</button>
+        </form>
+        <button type="button" class="btn-act btn-tune" onclick="openAdjustModal('${k._id}', '${k.keyCode}', '${k.expiresAt ? new Date(k.expiresAt).toISOString().slice(0,16) : ''}')" title="Vaqtni erkin sozlash">⏱ Sozlash</button>
         <form class="act-form" method="POST" action="/admin/reset" onsubmit="return confirm('Kalitni HOZIRGI vaqtdan boshlab 24 soatga qayta tiklashni tasdiqlaysizmi?\\nKalit: ${k.keyCode}')">
           <input type="hidden" name="id" value="${k._id}">
           <button class="btn-act btn-reset" title="Hozirdan boshlab 24 soatga qayta tiklash">Qayta</button>
@@ -997,6 +1009,76 @@ app.get('/admin', requireAdmin, async (req, res) => {
     .btn-reset:hover { background: #10b981; color: #fff; transform: translateY(-1px); }
     .btn-revoke { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border-color: rgba(239, 68, 68, 0.3); }
     .btn-revoke:hover { background: #ef4444; color: #fff; transform: translateY(-1px); }
+    .btn-sub { background: rgba(239, 68, 68, 0.12); color: #f87171; border-color: rgba(239, 68, 68, 0.3); }
+    .btn-sub:hover { background: #dc2626; color: #fff; transform: translateY(-1px); }
+    .btn-tune { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border-color: rgba(99, 102, 241, 0.3); }
+    .btn-tune:hover { background: #6366f1; color: #fff; transform: translateY(-1px); }
+
+    /* Modal Backdrop & Card */
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 16px;
+      animation: fadeIn 0.2s ease;
+    }
+    .modal-card {
+      background: rgba(13, 14, 20, 0.95);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: 24px;
+      padding: 26px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 35px var(--gold-glow);
+    }
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .modal-head h4 { font-size: 17px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
+    .btn-close {
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: #94a3b8;
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-close:hover { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .modal-key-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fbbf24;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 8px 12px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    .btn-modal-cancel {
+      padding: 10px 18px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #cbd5e1;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-modal-cancel:hover { background: rgba(255, 255, 255, 0.12); }
 
     #toast {
       position: fixed;
@@ -1154,7 +1236,74 @@ app.get('/admin', requireAdmin, async (req, res) => {
 
   <div id="toast">Nusxa olindi! ✓</div>
 
+  <!-- Adjust Time Modal -->
+  <div id="adjustModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h4>⏱ Kalit vaqtini sozlash</h4>
+        <button type="button" class="btn-close" onclick="closeAdjustModal()">✕</button>
+      </div>
+      <form method="POST" action="/admin/adjust-time">
+        <input type="hidden" name="id" id="modalKeyId">
+        <div class="modal-key-badge" id="modalKeyCode">XXXX-XXXX-XXXX-XXXX</div>
+
+        <div class="field" style="margin-bottom: 14px;">
+          <label>Amal turi</label>
+          <select name="mode" id="adjustMode" onchange="toggleAdjustMode(this.value)">
+            <option value="add">➕ Vaqt qo'shish (+)</option>
+            <option value="sub">➖ Vaqt ayirish (-)</option>
+            <option value="exact">📅 Aniq yangi tugash sanasini belgilash</option>
+          </select>
+        </div>
+
+        <div id="relativeFields" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+          <div class="field">
+            <label>Miqdor</label>
+            <input type="number" name="amount" id="adjustAmount" value="1" min="1" max="999">
+          </div>
+          <div class="field">
+            <label>Vaqt birligi</label>
+            <select name="unit">
+              <option value="hours" selected>Soat</option>
+              <option value="days">Kun</option>
+              <option value="minutes">Minut</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="exactDateField" style="display: none; margin-bottom: 14px;">
+          <div class="field">
+            <label>Yangi tugash sanasi va vaqti</label>
+            <input type="datetime-local" name="exact_date" id="exactDateInput">
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+          <button type="button" class="btn-modal-cancel" onclick="closeAdjustModal()">Bekor qilish</button>
+          <button type="submit" class="btn-create" style="padding: 10px 22px;">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
+    function openAdjustModal(id, code, currentExpIso) {
+      document.getElementById('modalKeyId').value = id;
+      document.getElementById('modalKeyCode').innerText = code;
+      if (currentExpIso) {
+        document.getElementById('exactDateInput').value = currentExpIso;
+      }
+      document.getElementById('adjustModal').style.display = 'flex';
+    }
+
+    function closeAdjustModal() {
+      document.getElementById('adjustModal').style.display = 'none';
+    }
+
+    function toggleAdjustMode(val) {
+      document.getElementById('relativeFields').style.display = val === 'exact' ? 'none' : 'grid';
+      document.getElementById('exactDateField').style.display = val === 'exact' ? 'block' : 'none';
+    }
     function toggleCustom(val) {
       document.getElementById('customField').style.display = val === 'custom' ? 'block' : 'none';
     }
@@ -1251,15 +1400,73 @@ app.post('/admin/revoke', requireAdmin, async (req, res) => {
 });
 
 app.post('/admin/extend', requireAdmin, async (req, res) => {
-  const add = Math.max(60, parseInt(req.body.add_seconds || '3600', 10));
+  const delta = parseInt(req.body.add_seconds || '3600', 10);
   const doc = await Key.findById(req.body.id);
   if (doc) {
     const now = new Date();
-    let base = doc.expiresAt && doc.expiresAt > now ? doc.expiresAt : now;
-    doc.expiresAt = new Date(base.getTime() + add * 1000);
-    doc.durationSeconds += add;
-    doc.status = 'active';
+    if (doc.activatedAt && doc.expiresAt) {
+      const base = doc.expiresAt > now ? doc.expiresAt : now;
+      const newExp = new Date(base.getTime() + delta * 1000);
+      doc.expiresAt = newExp;
+      doc.durationSeconds = Math.max(60, doc.durationSeconds + delta);
+      doc.status = newExp > now ? 'active' : 'expired';
+    } else {
+      doc.durationSeconds = Math.max(60, doc.durationSeconds + delta);
+    }
     await doc.save();
+  }
+  res.redirect('/admin');
+});
+
+app.post('/admin/adjust-time', requireAdmin, async (req, res) => {
+  try {
+    const { id, mode, amount, unit, exact_date } = req.body || {};
+    const doc = await Key.findById(id);
+    if (!doc) return res.redirect('/admin');
+
+    const now = new Date();
+
+    if (mode === 'exact' && exact_date) {
+      const targetDate = new Date(exact_date);
+      if (!isNaN(targetDate.getTime())) {
+        if (!doc.activatedAt) doc.activatedAt = now;
+        doc.expiresAt = targetDate;
+        if (targetDate > now) {
+          doc.status = 'active';
+          doc.durationSeconds = Math.max(60, Math.floor((targetDate - doc.activatedAt) / 1000));
+        } else {
+          doc.status = 'expired';
+        }
+        await doc.save();
+      }
+      return res.redirect('/admin');
+    }
+
+    let deltaSeconds = 0;
+    const num = Math.abs(parseInt(amount || '0', 10));
+    let mult = 3600;
+    if (unit === 'minutes') mult = 60;
+    else if (unit === 'hours') mult = 3600;
+    else if (unit === 'days') mult = 86400;
+
+    deltaSeconds = num * mult;
+    if (mode === 'sub') {
+      deltaSeconds = -deltaSeconds;
+    }
+
+    if (deltaSeconds !== 0) {
+      if (doc.activatedAt && doc.expiresAt) {
+        const newExp = new Date(doc.expiresAt.getTime() + deltaSeconds * 1000);
+        doc.expiresAt = newExp;
+        doc.durationSeconds = Math.max(60, doc.durationSeconds + deltaSeconds);
+        doc.status = newExp > now ? 'active' : 'expired';
+      } else {
+        doc.durationSeconds = Math.max(60, doc.durationSeconds + deltaSeconds);
+      }
+      await doc.save();
+    }
+  } catch (e) {
+    console.error('adjust-time error:', e);
   }
   res.redirect('/admin');
 });
